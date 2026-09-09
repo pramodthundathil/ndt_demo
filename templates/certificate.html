@@ -50,124 +50,124 @@
   </div>
 </div>
 
-<!-- High Fidelity Certificate Sheet (Matches Sample Image Layout Exactly) -->
+<!-- High Fidelity Certificate Sheet (Single Thicker Border with Horizontal Header) -->
 <div class="certificate-container">
   <div class="certificate-sheet">
-    <div class="cert-outer-border">
+    <div class="cert-single-border">
       
-      <!-- Vertical Text inside Outer Border Left Margin Gap -->
-      <div class="cert-side-vertical-title">Inspection Certificate</div>
-      <div class="cert-side-vertical-sub">◆ Perfection in Inspection</div>
+      <!-- Background Faint Watermark -->
+      <div class="cert-watermark-overlay">MTQ Products B.V.</div>
 
-      <div class="cert-inner-border">
-        <!-- Background Faint Watermark -->
-        <div class="cert-watermark-overlay">MTQ Products B.V.</div>
+      <!-- Header Section -->
+      <div>
+        <!-- Top Horizontal Header Bar Inside Border -->
+        <div class="cert-top-horizontal-bar">
+          <div class="cert-top-title">Inspection Certificate</div>
+          <div class="cert-top-sub">◆ Perfection in Inspection</div>
+        </div>
 
-        <!-- Header Section -->
-        <div>
-          <div class="cert-header-block">
-            <div class="mtq-logo-badge-img-wrapper">
-              <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Products B.V." class="cert-logo-img">
-            </div>
-
-            <h1 class="cert-heading-primary">GANGWAY VISUAL INSPECTION CERTIFICATE</h1>
-            <h2 class="cert-heading-secondary">according to EN 526:2016</h2>
+        <div class="cert-header-block">
+          <div class="mtq-logo-badge-img-wrapper">
+            <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Products B.V." class="cert-logo-img">
           </div>
 
-          <!-- Data Grid Table -->
-          <table class="cert-grid-table">
-            <tr>
-              <td class="cert-field-label">MTQ Project No.</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">{{ report.project_no }}</td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Vessel</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">{{ report.vessel_name }}</td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Make</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">{{ report.make_manufacturer }}</td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Year</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">{{ report.year_manufactured|default:"........................" }}</td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Size/length</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">
-                {% if report.size_length %}
-                  {{ report.size_length }}{% if "meter" not in report.size_length|lower %} meters{% endif %}
-                {% else %}
-                  ........................ meters
-                {% endif %}
-              </td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Marking</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">{{ report.marking_tag|default:"........................" }}</td>
-            </tr>
-            <tr>
-              <td class="cert-field-label">Validity Certificate</td>
-              <td class="cert-field-colon">:</td>
-              <td class="cert-field-value">
-                {{ report.inspection_date|date:"d-m-Y" }} until {{ report.validity_until|date:"d-m-Y" }}
-              </td>
-            </tr>
-          </table>
+          <h1 class="cert-heading-primary">GANGWAY VISUAL INSPECTION CERTIFICATE</h1>
+          <h2 class="cert-heading-secondary">according to EN 526:2016</h2>
+        </div>
 
-          <!-- Statement Text Block -->
-          <div class="cert-statement-text">
-            {{ report.approval_statement }}
+        <!-- Data Grid Table -->
+        <table class="cert-grid-table">
+          <tr>
+            <td class="cert-field-label">MTQ Project No.</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">{{ report.project_no }}</td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Vessel</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">{{ report.vessel_name }}</td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Make</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">{{ report.make_manufacturer }}</td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Year</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">{{ report.year_manufactured|default:"........................" }}</td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Size/length</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">
+              {% if report.size_length %}
+                {{ report.size_length }}{% if "meter" not in report.size_length|lower %} meters{% endif %}
+              {% else %}
+                ........................ meters
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Marking</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">{{ report.marking_tag|default:"........................" }}</td>
+          </tr>
+          <tr>
+            <td class="cert-field-label">Validity Certificate</td>
+            <td class="cert-field-colon">:</td>
+            <td class="cert-field-value">
+              {{ report.inspection_date|date:"d-m-Y" }} until {{ report.validity_until|date:"d-m-Y" }}
+            </td>
+          </tr>
+        </table>
+
+        <!-- Statement Text Block -->
+        <div class="cert-statement-text">
+          {{ report.approval_statement }}
+        </div>
+
+        <!-- Date & Signed Section -->
+        <div class="cert-sign-grid">
+          <div class="cert-sign-line">
+            <div class="cert-sign-title">Date</div>
+            <div class="cert-field-colon">:</div>
+            <div class="cert-date-value">
+              {{ report.inspection_date|date:"d-m-Y" }}
+            </div>
           </div>
 
-          <!-- Date & Signed Section -->
-          <div class="cert-sign-grid">
-            <div class="cert-sign-line">
-              <div class="cert-sign-title">Date</div>
-              <div class="cert-field-colon">:</div>
-              <div class="cert-date-value">
-                {{ report.inspection_date|date:"d-m-Y" }}
-              </div>
-            </div>
+          <div class="cert-sign-line" style="margin-bottom: 0;">
+            <div class="cert-sign-title">Signed</div>
+            <div class="cert-field-colon">:</div>
+            <div class="cert-sign-box">
+              {% if report.signature_image %}
+                <img src="{{ report.signature_image.url }}" alt="Tester Signature" class="cert-sig-img-element">
+              {% else %}
+                <div style="border-bottom: 1.5px dotted #111; width: 180px; height: 40px;"></div>
+              {% endif %}
 
-            <div class="cert-sign-line" style="margin-bottom: 0;">
-              <div class="cert-sign-title">Signed</div>
-              <div class="cert-field-colon">:</div>
-              <div class="cert-sign-box">
-                {% if report.signature_image %}
-                  <img src="{{ report.signature_image.url }}" alt="Tester Signature" class="cert-sig-img-element">
-                {% else %}
-                  <div style="border-bottom: 1.5px dotted #111; width: 180px; height: 40px;"></div>
-                {% endif %}
-
-                <!-- MTQ Company Seal Stamp Image -->
-                <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Seal" class="cert-seal-img">
-              </div>
+              <!-- MTQ Company Seal Stamp Image -->
+              <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Seal" class="cert-seal-img">
             </div>
           </div>
         </div>
-
-        <!-- Corporate Footer Details -->
-        <div class="cert-footer-wrapper">
-          <div>
-            MTQ Products B.V. member of The Ned Marine Group – Postaddress: Wolweverstraat 43 – 2984 CE Ridderkerk – The Netherlands<br>
-            Phone 0031 (0) 78 20 05 072- E-mail sales@mtq-products.com – Website www.mtq-products.com<br>
-            Registered Chamber of Commerce (KvK) Rotterdam 67923216 ABN AMRO Bank no. 510736483 VAT no. NL857227476B01<br>
-            International Banking Account no. NL55ABNA0510736483 – Swift no. ABNANL2A
-          </div>
-          <div class="cert-footer-bottom-bar">
-            <div style="flex: 1; text-align: center; margin-left: 60px;">Documentation No.: {{ report.report_number }}</div>
-            <div>Page 1 of 1</div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Corporate Footer Details -->
+      <div class="cert-footer-wrapper">
+        <div>
+          MTQ Products B.V. member of The Ned Marine Group – Postaddress: Wolweverstraat 43 – 2984 CE Ridderkerk – The Netherlands<br>
+          Phone 0031 (0) 78 20 05 072- E-mail sales@mtq-products.com – Website www.mtq-products.com<br>
+          Registered Chamber of Commerce (KvK) Rotterdam 67923216 ABN AMRO Bank no. 510736483 VAT no. NL857227476B01<br>
+          International Banking Account no. NL55ABNA0510736483 – Swift no. ABNANL2A
+        </div>
+        <div class="cert-footer-bottom-bar">
+          <div style="flex: 1; text-align: center; margin-left: 60px;">Documentation No.: {{ report.report_number }}</div>
+          <div>Page 1 of 1</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

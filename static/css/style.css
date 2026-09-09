@@ -662,7 +662,7 @@ canvas#sigCanvas {
   transform-origin: left bottom;
   font-family: Arial, sans-serif;
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #6392c6;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -687,40 +687,24 @@ canvas#sigCanvas {
 
 .cert-header-block {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
-.mtq-logo-badge {
-  width: 170px;
-  margin: 0 auto 1.1rem;
-  border: 2px solid #005696;
-  border-radius: 6px;
-  padding: 4px 8px;
+.mtq-logo-badge-img-wrapper {
+  margin: 0 auto 0.75rem;
   text-align: center;
-  background: #ffffff;
 }
 
-.mtq-logo-title {
-  font-family: 'Arial Black', Arial, sans-serif;
-  font-size: 2.1rem;
-  font-weight: 900;
-  color: #005696;
-  line-height: 0.95;
-  letter-spacing: 1.2px;
-}
-
-.mtq-logo-sub {
-  font-family: Arial, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #005696;
-  margin-top: 2px;
+.cert-logo-img {
+  max-height: 85px;
+  max-width: 175px;
+  object-fit: contain;
 }
 
 .cert-heading-primary {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: underline;
   text-transform: uppercase;
   margin-bottom: 0.4rem;
@@ -731,7 +715,7 @@ canvas#sigCanvas {
 .cert-heading-secondary {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.98rem;
-  font-weight: 400;
+  font-weight: 700;
   text-decoration: underline;
   color: #000000;
 }
@@ -750,7 +734,7 @@ canvas#sigCanvas {
 }
 
 .cert-field-label {
-  font-weight: 700;
+  font-weight: 400;
   width: 36%;
   white-space: nowrap;
   color: #000000;
@@ -759,13 +743,13 @@ canvas#sigCanvas {
 .cert-field-colon {
   width: 4%;
   text-align: center;
-  font-weight: 700;
+  font-weight: 400;
   color: #000000;
 }
 
 .cert-field-value {
   border-bottom: 1.5px dotted #111111;
-  font-weight: 600;
+  font-weight: 400;
   padding-left: 0.5rem;
   color: #000000;
   min-height: 20px;
@@ -777,7 +761,7 @@ canvas#sigCanvas {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.98rem;
   line-height: 1.45;
-  font-weight: 600;
+  font-weight: 400;
   color: #000000;
   text-align: left;
 }
@@ -796,7 +780,7 @@ canvas#sigCanvas {
 }
 
 .cert-sign-title {
-  font-weight: 700;
+  font-weight: 400;
   width: 90px;
   color: #000000;
 }
@@ -806,7 +790,7 @@ canvas#sigCanvas {
   min-width: 200px;
   padding-left: 0.5rem;
   margin-left: 0.5rem;
-  font-weight: 600;
+  font-weight: 400;
   color: #000000;
 }
 
@@ -823,29 +807,11 @@ canvas#sigCanvas {
   object-fit: contain;
 }
 
-.cert-stamp-badge {
-  width: 68px;
-  border: 1.5px solid #005696;
-  border-radius: 4px;
-  padding: 2px 4px;
-  text-align: center;
-  background: #ffffff;
-}
-
-.stamp-mtq-title {
-  font-family: 'Arial Black', Arial, sans-serif;
-  font-weight: 900;
-  color: #005696;
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-.stamp-mtq-sub {
-  font-family: Arial, sans-serif;
-  font-size: 0.45rem;
-  color: #005696;
-  font-weight: 700;
-  margin-top: 1px;
+.cert-seal-img {
+  max-height: 55px;
+  max-width: 110px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .cert-footer-wrapper {
@@ -856,6 +822,7 @@ canvas#sigCanvas {
   text-align: center;
   color: #222222;
   line-height: 1.3;
+  font-weight: 400;
 }
 
 .cert-footer-bottom-bar {
@@ -863,7 +830,7 @@ canvas#sigCanvas {
   justify-content: space-between;
   align-items: center;
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 400;
   margin-top: 0.25rem;
   color: #000000;
 }

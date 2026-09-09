@@ -66,9 +66,8 @@
         <!-- Header Section -->
         <div>
           <div class="cert-header-block">
-            <div class="mtq-logo-badge">
-              <div class="mtq-logo-title">MTQ</div>
-              <div class="mtq-logo-sub">Products B.V.</div>
+            <div class="mtq-logo-badge-img-wrapper">
+              <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Products B.V." class="cert-logo-img">
             </div>
 
             <h1 class="cert-heading-primary">GANGWAY VISUAL INSPECTION CERTIFICATE</h1>
@@ -127,7 +126,7 @@
           <div class="cert-sign-grid">
             <div class="cert-sign-line">
               <div class="cert-sign-title">Date</div>
-              <div style="font-weight: 700;">:</div>
+              <div class="cert-field-colon">:</div>
               <div class="cert-date-value">
                 {{ report.inspection_date|date:"d-m-Y" }}
               </div>
@@ -135,7 +134,7 @@
 
             <div class="cert-sign-line" style="margin-bottom: 0;">
               <div class="cert-sign-title">Signed</div>
-              <div style="font-weight: 700;">:</div>
+              <div class="cert-field-colon">:</div>
               <div class="cert-sign-box">
                 {% if report.signature_image %}
                   <img src="{{ report.signature_image.url }}" alt="Tester Signature" class="cert-sig-img-element">
@@ -143,11 +142,8 @@
                   <div style="border-bottom: 1.5px dotted #111; width: 180px; height: 40px;"></div>
                 {% endif %}
 
-                <!-- MTQ Company Seal Stamp -->
-                <div class="cert-stamp-badge">
-                  <div class="stamp-mtq-title">MTQ</div>
-                  <div class="stamp-mtq-sub">Products B.V.</div>
-                </div>
+                <!-- MTQ Company Seal Stamp Image -->
+                <img src="{% static 'images/logo_mtq.png' %}" alt="MTQ Seal" class="cert-seal-img">
               </div>
             </div>
           </div>

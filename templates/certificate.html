@@ -100,7 +100,11 @@
               <td class="cert-field-label">Size/length</td>
               <td class="cert-field-colon">:</td>
               <td class="cert-field-value">
-                {% if report.size_length %}{{ report.size_length }}{% else %}........................ meters{% endif %}
+                {% if report.size_length %}
+                  {{ report.size_length }}{% if "meter" not in report.size_length|lower %} meters{% endif %}
+                {% else %}
+                  ........................ meters
+                {% endif %}
               </td>
             </tr>
             <tr>
@@ -109,7 +113,7 @@
               <td class="cert-field-value">{{ report.marking_tag|default:"........................" }}</td>
             </tr>
             <tr>
-              <td class="cert-field-label">Validity Certificate:</td>
+              <td class="cert-field-label">Validity Certificate</td>
               <td class="cert-field-colon">:</td>
               <td class="cert-field-value">
                 {{ report.inspection_date|date:"d-m-Y" }} until {{ report.validity_until|date:"d-m-Y" }}

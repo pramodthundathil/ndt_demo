@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Test Procedures - NDT Marine System{% endblock %}
+{% block page_title %}NDT Test Procedures & Inspection Standards{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-dark); font-weight: 800;">Inspection Standards Library</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Defined NDT testing procedures and certificate approval templates</p>
+    </div>
+    {% if profile.role == 'ADMIN' %}
+      <a href="{% url 'create_procedure' %}" class="btn btn-primary">
+        + Add New Standard
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Standard Code</th>
+          <th>Procedure Title</th>
+          <th>Description</th>
+          <th>Default Approval Text</th>
+          {% if profile.role == 'ADMIN' %}<th style="text-align: right;">Action</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for proc in procedures %}
+        <tr>
+          <td><strong style="color: var(--primary);">{{ proc.standard_code }}</strong></td>
+          <td><span style="font-weight: 600; color: var(--text-dark);">{{ proc.title }}</span></td>
+          <td style="color: var(--text-muted); font-size: 0.88rem;">{{ proc.description|default:"Standard marine inspection" }}</td>
+          <td style="font-size: 0.85rem; max-width: 320px; color: var(--text-body);">{{ proc.default_statement|truncatechars:90 }}</td>
+          {% if profile.role == 'ADMIN' %}
+          <td style="text-align: right;">
+            <a href="{% url 'edit_procedure' proc.pk %}" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+              ✏️ Edit
+            </a>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No procedures configured yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

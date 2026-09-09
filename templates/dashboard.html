@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - NDT Marine Inspection System{% endblock %}
+{% block page_title %}Inspection Dashboard & Analytics{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    </div>
+    <div>
+      <div class="stat-number">{{ total_reports }}</div>
+      <div class="stat-label">Total Inspection Certificates</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background: #dcfce7; color: #16a34a;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div>
+      <div class="stat-number">{{ approved_reports }}</div>
+      <div class="stat-label">Approved & Certified Pass</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+    </div>
+    <div>
+      <div class="stat-number">{{ vessels_count }}</div>
+      <div class="stat-label">Ships / Vessels Inspected</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon" style="background: #f3e8ff; color: #9333ea;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.603 15.2a2 2 0 01-1.022-.547l-2.387-.477A2 2 0 011 12.302V5.698a2 2 0 011.194-1.876l2.387-.477a6 6 0 013.86.517l.318.158a6 6 0 003.86.517l2.387-.477A2 2 0 0117 5.698v6.604a2 2 0 01-1.194 1.876l-2.387.477z"/></svg>
+    </div>
+    <div>
+      <div class="stat-number">{{ procedures_count }}</div>
+      <div class="stat-label">Active Inspection Standards</div>
+    </div>
+  </div>
+</div>
+
+<!-- Streamlined Recent Certificates Table -->
+<div class="table-card-wrapper">
+  <div class="table-toolbar">
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--text-dark);">Recent Inspection Certificates</h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted);">Click any row to open the full certificate page</p>
+    </div>
+    <a href="{% url 'report_list' %}" class="btn btn-secondary" style="font-size: 0.8rem;">View All Certificates</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Certificate & Vessel</th>
+          <th>Project & Inspector</th>
+          <th>Validity Period</th>
+          <th>Status</th>
+          <th style="text-align: right; width: 100px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in recent_reports %}
+        <tr class="table-row-clickable" onclick="window.location.href='{% url 'certificate_detail' report.pk %}'" title="Click row to view certificate">
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span class="doc-number-badge">{{ report.report_number }}</span>
+                <span style="font-size: 0.72rem; background: #f1f5f9; color: #475569; padding: 1px 6px; border-radius: 4px; border: 1px solid #e2e8f0; font-weight: 600;">
+                  {{ report.procedure.standard_code|default:"EN 526:2016" }}
+                </span>
+              </div>
+              <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem;">
+                🚢 {{ report.vessel_name }}
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-weight: 600; color: #334155; font-size: 0.83rem;">
+                Project: {{ report.project_no }}
+              </div>
+              <div class="inspector-cell">
+                <div class="inspector-avatar">
+                  {{ report.inspector.username|slice:":1"|upper }}
+                </div>
+                <span style="font-size: 0.78rem; color: #64748b;">{{ report.inspector.get_full_name|default:report.inspector.username }}</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div style="font-size: 0.8rem; color: #334155; line-height: 1.35;">
+              <div><span style="color: #64748b; font-size: 0.73rem;">Inspected:</span> <strong>{{ report.inspection_date|date:"Y-m-d" }}</strong></div>
+              <div><span style="color: #64748b; font-size: 0.73rem;">Valid Until:</span> <strong>{{ report.validity_until|date:"Y-m-d" }}</strong></div>
+            </div>
+          </td>
+
+          <td>
+            {% if report.status == 'APPROVED' %}
+              <span class="badge badge-success">Approved</span>
+            {% elif report.status == 'DRAFT' %}
+              <span class="badge badge-warning">Draft</span>
+            {% else %}
+              <span class="badge badge-danger">Failed</span>
+            {% endif %}
+          </td>
+
+          <td style="text-align: right;" onclick="event.stopPropagation();">
+            <a href="{% url 'certificate_detail' report.pk %}" class="btn btn-secondary btn-icon" title="View Certificate">
+              📜 View
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No inspection certificates recorded yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

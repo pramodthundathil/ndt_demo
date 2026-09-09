@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - NDT Marine Inspection System{% endblock %}
+
+{% block auth_content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 1.5rem;">
+  <div style="width: 100%; max-width: 440px; background: #ffffff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #0284c7, #38bdf8); border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.6rem; color: #fff; margin-bottom: 1rem; box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3);">
+        NDT
+      </div>
+      <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">NDT Marine Portal</h2>
+      <p style="color: #64748b; font-size: 0.88rem;">Ship & Vessel Inspection Certificate System</p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div style="padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" id="loginForm">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Enter username" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1rem; margin-top: 1rem;">
+        Sign In to Portal
+      </button>
+    </form>
+
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+      <p style="font-size: 0.78rem; color: #64748b; text-align: center; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+        DEMO ACCOUNTS (CLICK TO AUTO-FILL)
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+        <button type="button" onclick="fillCredentials('admin', 'admin123')" class="btn btn-secondary" style="font-size: 0.8rem; justify-content: center; padding: 0.55rem;">
+          🛡️ Admin Supervisor
+        </button>
+        <button type="button" onclick="fillCredentials('tester', 'tester123')" class="btn btn-secondary" style="font-size: 0.8rem; justify-content: center; padding: 0.55rem;">
+          🖊️ Testing Person
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function fillCredentials(user, pass) {
+    document.getElementById('username').value = user;
+    document.getElementById('password').value = pass;
+  }
+</script>
+{% endblock %}

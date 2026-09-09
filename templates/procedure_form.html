@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if procedure %}Edit Procedure{% else %}New Procedure{% endif %} - NDT Marine System{% endblock %}
+{% block page_title %}{% if procedure %}Edit Test Procedure{% else %}Add NDT Test Procedure{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+  <form method="post">
+    {% csrf_token %}
+    
+    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+      <h3 style="font-family: var(--font-heading); color: var(--text-dark); font-size: 1.25rem; font-weight: 800;">Procedure Details</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Configure marine NDT standard and default approval text</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="title">Procedure Title *</label>
+      <input type="text" name="title" id="title" class="form-control" 
+             placeholder="e.g. Gangway Visual Inspection" value="{{ procedure.title|default:'' }}" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="standard_code">Standard Code / Reference *</label>
+      <input type="text" name="standard_code" id="standard_code" class="form-control" 
+             placeholder="e.g. EN 526:2016 / ISO 17637" value="{{ procedure.standard_code|default:'' }}" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Procedure Description</label>
+      <textarea name="description" id="description" rows="3" class="form-control" placeholder="Instructions, scope of testing, or equipment guidelines...">{{ procedure.description|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="default_statement">Default Certificate Approval Statement *</label>
+      <textarea name="default_statement" id="default_statement" rows="3" class="form-control" required>{{ procedure.default_statement|default:'This Gangway / Platform has been visually inspected in conformity with NEN-EN 526 and approved for use for the period of one year.' }}</textarea>
+    </div>
+
+    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+      <a href="{% url 'procedure_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save Procedure</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

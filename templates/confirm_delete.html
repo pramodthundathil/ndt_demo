@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete - NDT Marine System{% endblock %}
+{% block page_title %}Delete Confirmation{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 2rem auto; text-align: center; padding: 2.5rem;">
+  <div style="width: 60px; height: 60px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+    <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+  </div>
+
+  <h3 style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--text-dark); font-weight: 800; margin-bottom: 0.5rem;">
+    Confirm Deletion
+  </h3>
+  <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+    Are you sure you want to permanently delete certificate <strong style="color: var(--primary);">{{ object.report_number }}</strong>? This action cannot be undone.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <a href="{% url 'report_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-danger">Yes, Delete Certificate</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

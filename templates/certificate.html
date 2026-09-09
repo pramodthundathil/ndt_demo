@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ report.report_number }} - Visual Inspection Certificate{% endblock %}
+
+{% block content %}
+<!-- Sleek Enterprise Action Bar (hidden when printing) -->
+<div class="no-print" style="max-width: 210mm; margin: 0 auto 1.25rem;">
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <a href="{% url 'report_list' %}" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.45rem 0.85rem;">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Certificates
+      </a>
+    </div>
+    
+    <div style="display: flex; gap: 0.65rem; align-items: center;">
+      <a href="{% url 'edit_report' report.pk %}" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.45rem 0.85rem;">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Edit Certificate
+      </a>
+      
+      <button onclick="window.print()" class="btn btn-primary" style="font-size: 0.82rem; padding: 0.45rem 1rem;">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        Print / Save PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- High Fidelity Certificate Sheet (Matches Image Layout Exactly) -->
+<div class="certificate-container">
+  <div class="certificate-sheet">
+    <div class="cert-outer-border">
+      
+      <!-- Vertical Text on Left Margin Gap -->
+      <div class="cert-side-vertical-title">Inspection Certificate</div>
+      <div class="cert-side-vertical-sub">◆ Perfection in Inspection</div>
+
+      <div class="cert-inner-border">
+        <!-- Background Faint Watermark -->
+        <div class="cert-watermark-overlay">MTQ Products B.V.</div>
+
+        <!-- Header Section -->
+        <div>
+          <div class="cert-header-block">
+            <div class="mtq-logo-badge">
+              <div class="mtq-logo-title">MTQ</div>
+              <div class="mtq-logo-sub">Products B.V.</div>
+            </div>
+
+            <h1 class="cert-heading-primary">GANGWAY VISUAL INSPECTION CERTIFICATE</h1>
+            <h2 class="cert-heading-secondary">according to EN 526:2016</h2>
+          </div>
+
+          <!-- Data Grid Table -->
+          <table class="cert-grid-table">
+            <tr>
+              <td class="cert-field-label">MTQ Project No.</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">{{ report.project_no }}</td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Vessel</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">{{ report.vessel_name }}</td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Make</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">{{ report.make_manufacturer }}</td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Year</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">{{ report.year_manufactured|default:"........................" }}</td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Size/length</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">
+                {% if report.size_length %}{{ report.size_length }}{% else %}........................ meters{% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Marking</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">{{ report.marking_tag|default:"........................" }}</td>
+            </tr>
+            <tr>
+              <td class="cert-field-label">Validity Certificate</td>
+              <td class="cert-field-colon">:</td>
+              <td class="cert-field-value">
+                {{ report.inspection_date|date:"d-m-Y" }} until {{ report.validity_until|date:"d-m-Y" }}
+              </td>
+            </tr>
+          </table>
+
+          <!-- Statement Text Block -->
+          <div class="cert-statement-text">
+            {{ report.approval_statement }}
+          </div>
+
+          <!-- Date & Signed Section -->
+          <div class="cert-sign-grid">
+            <div class="cert-sign-line">
+              <div class="cert-sign-title">Date</div>
+              <div style="font-weight: 700;">:</div>
+              <div style="border-bottom: 1.5px dotted #111; min-width: 200px; padding-left: 0.75rem; margin-left: 0.5rem; font-weight: 600;">
+                {{ report.inspection_date|date:"d-m-Y" }}
+              </div>
+            </div>
+
+            <div class="cert-sign-line" style="margin-bottom: 0;">
+              <div class="cert-sign-title">Signed</div>
+              <div style="font-weight: 700;">:</div>
+              <div class="cert-sign-box" style="margin-left: 0.5rem;">
+                {% if report.signature_image %}
+                  <img src="{{ report.signature_image.url }}" alt="Tester Signature" class="cert-sig-img-element">
+                {% else %}
+                  <div style="border-bottom: 1.5px dotted #111; width: 200px; height: 45px;"></div>
+                {% endif %}
+
+                <!-- MTQ Company Seal Stamp -->
+                <div class="cert-stamp-badge">
+                  <div style="font-weight: 900; color: #005696; font-size: 1.15rem; line-height: 1;">MTQ</div>
+                  <div style="font-size: 0.45rem; color: #005696; font-weight: 700;">Products B.V.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Corporate Footer Details -->
+        <div class="cert-footer-wrapper">
+          <div>
+            MTQ Products B.V. member of The Ned Marine Group – Postaddress: Wolweverstraat 43 – 2984 CE Ridderkerk – The Netherlands<br>
+            Phone 0031 (0) 78 20 05 072- E-mail sales@mtq-products.com – Website www.mtq-products.com<br>
+            Registered Chamber of Commerce (KvK) Rotterdam 67923216 ABN AMRO Bank no. 510736483 VAT no. NL857227476B01<br>
+            International Banking Account no. NL55ABNA0510736483 – Swift no. ABNANL2A
+          </div>
+          <div class="cert-footer-bottom-bar">
+            <div>Documentation No.: {{ report.report_number }}</div>
+            <div>Page 1 of 1</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Inspection Reports - NDT Marine System{% endblock %}
+{% block page_title %}NDT Inspection Certificates Library{% endblock %}
+
+{% block content %}
+<div class="table-card-wrapper">
+  <!-- Search & Filter Header Toolbar -->
+  <div class="table-toolbar">
+    <form method="get" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; flex: 1;">
+      <div style="flex: 1; min-width: 240px; max-width: 380px;">
+        <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search Vessel, Cert No, Project No, Tag...">
+      </div>
+      <div style="width: 160px;">
+        <select name="status" class="form-control" onchange="this.form.submit()">
+          <option value="">All Statuses</option>
+          <option value="APPROVED" {% if status_filter == 'APPROVED' %}selected{% endif %}>Approved / Certified</option>
+          <option value="DRAFT" {% if status_filter == 'DRAFT' %}selected{% endif %}>Draft</option>
+          <option value="REJECTED" {% if status_filter == 'REJECTED' %}selected{% endif %}>Failed</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-secondary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        Search
+      </button>
+      {% if search_query or status_filter %}
+        <a href="{% url 'report_list' %}" class="btn btn-secondary" style="opacity: 0.8;">Reset</a>
+      {% endif %}
+    </form>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 500;">
+        Total: <strong>{{ reports|length }}</strong> certificates
+      </span>
+      <a href="{% url 'create_report' %}" class="btn btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        New Inspection
+      </a>
+    </div>
+  </div>
+
+  <!-- Streamlined Clickable Enterprise Table -->
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Certificate & Vessel</th>
+          <th>Project & Inspector</th>
+          <th>Validity Period</th>
+          <th>Status</th>
+          <th style="text-align: right; width: 110px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+        <tr class="table-row-clickable" onclick="window.location.href='{% url 'certificate_detail' report.pk %}'" title="Click anywhere on row to view certificate">
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span class="doc-number-badge">{{ report.report_number }}</span>
+                <span style="font-size: 0.72rem; background: #f1f5f9; color: #475569; padding: 1px 6px; border-radius: 4px; border: 1px solid #e2e8f0; font-weight: 600;">
+                  {{ report.procedure.standard_code|default:"EN 526:2016" }}
+                </span>
+              </div>
+              <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem;">
+                🚢 {{ report.vessel_name }}
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-weight: 600; color: #334155; font-size: 0.83rem;">
+                Project: {{ report.project_no }}
+              </div>
+              <div class="inspector-cell">
+                <div class="inspector-avatar">
+                  {{ report.inspector.username|slice:":1"|upper }}
+                </div>
+                <span style="font-size: 0.78rem; color: #64748b;">{{ report.inspector.get_full_name|default:report.inspector.username }}</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div style="font-size: 0.8rem; color: #334155; line-height: 1.35;">
+              <div><span style="color: #64748b; font-size: 0.73rem;">Inspected:</span> <strong>{{ report.inspection_date|date:"Y-m-d" }}</strong></div>
+              <div><span style="color: #64748b; font-size: 0.73rem;">Valid Until:</span> <strong>{{ report.validity_until|date:"Y-m-d" }}</strong></div>
+            </div>
+          </td>
+
+          <td>
+            {% if report.status == 'APPROVED' %}
+              <span class="badge badge-success">Approved</span>
+            {% elif report.status == 'DRAFT' %}
+              <span class="badge badge-warning">Draft</span>
+            {% else %}
+              <span class="badge badge-danger">Failed</span>
+            {% endif %}
+          </td>
+
+          <td style="text-align: right;" onclick="event.stopPropagation();">
+            <div style="display: flex; gap: 6px; justify-content: flex-end;">
+              <a href="{% url 'edit_report' report.pk %}" class="btn btn-secondary btn-icon" title="Edit Certificate" style="padding: 0.35rem 0.65rem; font-size: 0.78rem;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Edit
+              </a>
+              <a href="{% url 'delete_report' report.pk %}" class="btn btn-danger btn-icon" title="Delete Certificate" style="padding: 0.35rem 0.55rem; font-size: 0.78rem;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+            <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🔍</div>
+            <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 0.25rem;">No certificates found</div>
+            <div style="font-size: 0.8rem;">Try adjusting your search query or create a new inspection certificate.</div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

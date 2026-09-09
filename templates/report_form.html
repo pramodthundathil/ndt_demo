@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if report %}Edit Certificate {{ report.report_number }}{% else %}New NDT Certificate{% endif %} - NDT Marine System{% endblock %}
+{% block page_title %}{% if report %}Edit NDT Certificate: {{ report.report_number }}{% else %}Create NDT Inspection Certificate{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="post" enctype="multipart/form-data" id="reportForm">
+    {% csrf_token %}
+    
+    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-dark); font-weight: 800;">
+          📜 Certificate Inspection Details
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Fill in testing details and sign live or upload inspector signature</p>
+      </div>
+      <div>
+        <a href="{% url 'report_list' %}" class="btn btn-secondary" style="font-size: 0.85rem;">Cancel</a>
+      </div>
+    </div>
+
+    <!-- Section 1: Identification & Vessel Details -->
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="report_number">Documentation / Certificate No. *</label>
+        <input type="text" name="report_number" id="report_number" class="form-control" 
+               value="{% if report %}{{ report.report_number }}{% else %}{{ new_report_number }}{% endif %}" required>
+        <div id="report_num_feedback" style="font-size: 0.82rem; margin-top: 4px; font-weight: 600;"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="procedure_id">Inspection Procedure / Standard *</label>
+        <select name="procedure_id" id="procedure_id" class="form-control" onchange="updateDefaultStatement()" required>
+          {% for proc in procedures %}
+            <option value="{{ proc.id }}" data-statement="{{ proc.default_statement }}"
+                    {% if report and report.procedure.id == proc.id %}selected{% endif %}>
+              {{ proc.title }} ({{ proc.standard_code }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="vessel_name">Vessel Name *</label>
+        <input type="text" name="vessel_name" id="vessel_name" class="form-control" 
+               placeholder="e.g. MV Atlantic Trader / MTQ Rig 04" value="{{ report.vessel_name|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="project_no">MTQ Project No. *</label>
+        <input type="text" name="project_no" id="project_no" class="form-control" 
+               placeholder="e.g. MTQ-2026-881" value="{{ report.project_no|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="make_manufacturer">Make / Manufacturer</label>
+        <input type="text" name="make_manufacturer" id="make_manufacturer" class="form-control" 
+               value="{{ report.make_manufacturer|default:'MTQ Products B.V.' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="year_manufactured">Year</label>
+        <input type="text" name="year_manufactured" id="year_manufactured" class="form-control" 
+               placeholder="e.g. 2023" value="{{ report.year_manufactured|default:'' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="size_length">Size / Length (meters)</label>
+        <input type="text" name="size_length" id="size_length" class="form-control" 
+               placeholder="e.g. 12.5 meters" value="{{ report.size_length|default:'' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="marking_tag">Marking / Tag No.</label>
+        <input type="text" name="marking_tag" id="marking_tag" class="form-control" 
+               placeholder="e.g. GW-8849-B" value="{{ report.marking_tag|default:'' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="inspection_date">Inspection Date *</label>
+        <input type="date" name="inspection_date" id="inspection_date" class="form-control" 
+               value="{{ report.inspection_date|date:'Y-m-d' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="validity_until">Validity Certificate Until *</label>
+        <input type="date" name="validity_until" id="validity_until" class="form-control" 
+               value="{{ report.validity_until|date:'Y-m-d' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="status">Inspection Result / Status *</label>
+        <select name="status" id="status" class="form-control">
+          <option value="APPROVED" {% if report and report.status == 'APPROVED' %}selected{% endif %}>Approved / Certified Pass</option>
+          <option value="DRAFT" {% if report and report.status == 'DRAFT' %}selected{% endif %}>Draft / In Review</option>
+          <option value="REJECTED" {% if report and report.status == 'REJECTED' %}selected{% endif %}>Failed / Rejected</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Section 2: Statement & Notes -->
+    <div class="form-group" style="margin-top: 1.5rem;">
+      <label class="form-label" for="approval_statement">Official Inspection Statement Text *</label>
+      <textarea name="approval_statement" id="approval_statement" rows="3" class="form-control" required>{% if report %}{{ report.approval_statement }}{% else %}This Gangway / Platform has been visually inspected in conformity with NEN-EN 526 and approved for use for the period of one year.{% endif %}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="notes">Inspector Notes & Remarks</label>
+      <textarea name="notes" id="notes" rows="2" class="form-control" placeholder="Additional observations, NDT equipment used, surface condition notes...">{{ report.notes|default:'' }}</textarea>
+    </div>
+
+    <!-- Section 3: Signature Capture Component -->
+    <div class="signature-box-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <div>
+          <h4 style="font-family: var(--font-heading); color: var(--text-dark); font-size: 1.1rem; font-weight: 700;">
+            ✍️ Inspector Signature & Sign-Off
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Choose to draw live signature, upload signature file, or use profile signature</p>
+        </div>
+      </div>
+
+      <input type="hidden" name="signature_type" id="signature_type" value="LIVE">
+      <input type="hidden" name="signature_canvas_data" id="signature_canvas_data">
+
+      <div class="signature-tab-buttons">
+        <button type="button" class="sig-tab-btn active" id="tabLiveBtn" onclick="switchSigTab('LIVE')">
+          🖌️ Live Digital Signature
+        </button>
+        <button type="button" class="sig-tab-btn" id="tabUploadBtn" onclick="switchSigTab('UPLOADED')">
+          📁 Upload Image File
+        </button>
+        <button type="button" class="sig-tab-btn" id="tabSavedBtn" onclick="switchSigTab('SAVED')">
+          👤 Re-use Profile Signature
+        </button>
+      </div>
+
+      <!-- Tab 1: Live Drawing Canvas Pad -->
+      <div id="sigPanelLive" class="sig-panel">
+        <div class="canvas-wrapper">
+          <canvas id="sigCanvas" width="550" height="180"></canvas>
+          <div class="canvas-controls">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span style="font-size: 0.8rem; color: #475569; font-weight: 600;">Ink Color:</span>
+              <button type="button" class="canvas-btn" style="background: #0f2b5c; width: 22px; height: 22px; border-radius: 50%; padding:0;" onclick="setInkColor('#0f2b5c')"></button>
+              <button type="button" class="canvas-btn" style="background: #000000; width: 22px; height: 22px; border-radius: 50%; padding:0;" onclick="setInkColor('#000000')"></button>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="canvas-btn" onclick="clearCanvas()">Clear Signature</button>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center;">
+          Draw your signature inside the box using mouse, stylus, or touch screen.
+        </p>
+      </div>
+
+      <!-- Tab 2: Upload Signature File -->
+      <div id="sigPanelUpload" class="sig-panel" style="display: none; padding: 1.5rem; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+        <label class="form-label" style="margin-bottom: 0.5rem;">Upload Signature Image (PNG or JPG format)</label>
+        <input type="file" name="signature_file" accept="image/*" class="form-control" style="max-width: 400px; margin: 0 auto;">
+      </div>
+
+      <!-- Tab 3: Saved Inspector Profile Signature -->
+      <div id="sigPanelSaved" class="sig-panel" style="display: none; padding: 1.5rem; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+        {% if profile.profile_signature %}
+          <p style="font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 0.5rem;">Saved Profile Signature Preview:</p>
+          <img src="{{ profile.profile_signature.url }}" alt="Profile Signature" style="max-height: 80px; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+        {% else %}
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            No saved profile signature found. You can upload one in your <a href="{% url 'profile' %}" style="color: var(--primary);">Profile Settings</a>.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Submit Button Bar -->
+    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+      <a href="{% url 'report_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">
+        {% if report %}💾 Save Changes{% else %}✨ Generate & Save Certificate{% endif %}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const today = new Date().toISOString().split('T')[0];
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    const nextYearStr = nextYear.toISOString().split('T')[0];
+
+    if (!document.getElementById('inspection_date').value) {
+      document.getElementById('inspection_date').value = today;
+    }
+    if (!document.getElementById('validity_until').value) {
+      document.getElementById('validity_until').value = nextYearStr;
+    }
+
+    initSignatureCanvas();
+  });
+
+  function updateDefaultStatement() {
+    const select = document.getElementById('procedure_id');
+    const selectedOpt = select.options[select.selectedIndex];
+    const statement = selectedOpt.getAttribute('data-statement');
+    if (statement && !document.getElementById('approval_statement').value) {
+      document.getElementById('approval_statement').value = statement;
+    }
+  }
+
+  function switchSigTab(type) {
+    document.getElementById('signature_type').value = type;
+    
+    document.getElementById('tabLiveBtn').classList.remove('active');
+    document.getElementById('tabUploadBtn').classList.remove('active');
+    document.getElementById('tabSavedBtn').classList.remove('active');
+
+    document.getElementById('sigPanelLive').style.display = 'none';
+    document.getElementById('sigPanelUpload').style.display = 'none';
+    document.getElementById('sigPanelSaved').style.display = 'none';
+
+    if (type === 'LIVE') {
+      document.getElementById('tabLiveBtn').classList.add('active');
+      document.getElementById('sigPanelLive').style.display = 'block';
+    } else if (type === 'UPLOADED') {
+      document.getElementById('tabUploadBtn').classList.add('active');
+      document.getElementById('sigPanelUpload').style.display = 'block';
+    } else if (type === 'SAVED') {
+      document.getElementById('tabSavedBtn').classList.add('active');
+      document.getElementById('sigPanelSaved').style.display = 'block';
+    }
+  }
+
+  let canvas, ctx;
+  let isDrawing = false;
+  let inkColor = "#0f2b5c";
+
+  function initSignatureCanvas() {
+    canvas = document.getElementById('sigCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = inkColor;
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing);
+  }
+
+  function setInkColor(color) {
+    inkColor = color;
+    if (ctx) ctx.strokeStyle = inkColor;
+  }
+
+  function startDrawing(e) {
+    isDrawing = true;
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  }
+
+  function draw(e) {
+    if (!isDrawing) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.stroke();
+  }
+
+  function handleTouchStart(e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      isDrawing = true;
+      ctx.beginPath();
+      ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    }
+  }
+
+  function handleTouchMove(e) {
+    e.preventDefault();
+    if (!isDrawing || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.stroke();
+  }
+
+  function stopDrawing() {
+    if (isDrawing) {
+      isDrawing = false;
+      ctx.closePath();
+      saveCanvasData();
+    }
+  }
+
+  function clearCanvas() {
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('signature_canvas_data').value = '';
+    }
+  }
+
+  function saveCanvasData() {
+    if (canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      document.getElementById('signature_canvas_data').value = dataUrl;
+    }
+  }
+
+  document.getElementById('reportForm').addEventListener('submit', function(e) {
+    if (document.getElementById('signature_type').value === 'LIVE') {
+      saveCanvasData();
+    }
+  });
+
+  // Live Unique Certificate Number Validation
+  const reportNumInput = document.getElementById('report_number');
+  const feedbackDiv = document.getElementById('report_num_feedback');
+  let checkTimeout = null;
+
+  if (reportNumInput && feedbackDiv) {
+    function validateReportNumber() {
+      const num = reportNumInput.value.trim();
+      if (!num) {
+        feedbackDiv.style.color = '#dc2626';
+        feedbackDiv.textContent = '✕ Certificate number cannot be empty.';
+        reportNumInput.style.borderColor = '#ef4444';
+        return;
+      }
+      
+      clearTimeout(checkTimeout);
+      checkTimeout = setTimeout(() => {
+        const currentId = "{% if report %}{{ report.id }}{% endif %}";
+        fetch(`/api/check-report-number/?report_number=${encodeURIComponent(num)}&current_id=${currentId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.available) {
+              feedbackDiv.style.color = '#16a34a';
+              feedbackDiv.textContent = '✓ ' + data.message;
+              reportNumInput.style.borderColor = '#22c55e';
+            } else {
+              feedbackDiv.style.color = '#dc2626';
+              feedbackDiv.textContent = '✕ ' + data.message;
+              reportNumInput.style.borderColor = '#ef4444';
+            }
+          })
+          .catch(err => {
+            console.error('Validation error:', err);
+          });
+      }, 300);
+    }
+
+    reportNumInput.addEventListener('input', validateReportNumber);
+    // Initial check on load
+    if (reportNumInput.value) {
+      validateReportNumber();
+    }
+  }
+</script>
+{% endblock %}

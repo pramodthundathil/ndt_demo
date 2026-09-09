@@ -73,26 +73,53 @@ class Command(BaseCommand):
             standard_code="EN 526:2016",
             defaults={
                 "title": "Gangway Visual Inspection Certificate",
-                "description": "Visual inspection of ship gangways and boarding platforms in conformity with EN 526:2016 standard specifications.",
+                "description": "Visual inspection & structural integrity verification of ship gangways and boarding platforms in conformity with EN 526:2016.",
                 "default_statement": "This Gangway / Platform has been visually inspected in conformity with NEN-EN 526 and approved for use for the period of one year."
             }
         )
 
-        proc_utm, _ = InspectionProcedure.objects.get_or_create(
-            standard_code="ISO 16809:2019",
+        proc_loadtest, _ = InspectionProcedure.objects.get_or_create(
+            standard_code="26-C095 / ISO7061-A",
             defaults={
-                "title": "Ultrasonic Thickness Measurement (UTM)",
-                "description": "Non-destructive ultrasonic thickness testing of ship hull plating, bulkheads, and structural members.",
-                "default_statement": "Ultrasonic thickness measurement conducted in compliance with classification society guidelines. Steel thickness within permissible corrosion limits."
+                "title": "Load Test Report 26-C095 / ISO7061-A",
+                "description": "Proof load testing and structural deflection assessment for aluminum shore gangways & marine lifting equipment.",
+                "default_statement": "Proof load test conducted in accordance with ISO 7061-A & 26-C095 guidelines. Maximum test load applied without permanent deformation."
             }
         )
 
         proc_mpi, _ = InspectionProcedure.objects.get_or_create(
             standard_code="ISO 17638:2016",
             defaults={
-                "title": "Magnetic Particle Inspection (MPI)",
-                "description": "Surface and near-surface defect detection in ferromagnetic welds and ship structures using AC Yoke.",
-                "default_statement": "Magnetic particle testing performed on critical structural welds. No surface breaking linear discontinuities detected."
+                "title": "Magnetic Report",
+                "description": "Surface and near-surface flaw detection in ferromagnetic welds and ship structures using AC Yoke.",
+                "default_statement": "Magnetic particle testing performed on critical structural welds. No surface breaking linear discontinuities or cracks detected."
+            }
+        )
+
+        proc_rec, _ = InspectionProcedure.objects.get_or_create(
+            standard_code="NDT-REC-2026",
+            defaults={
+                "title": "Recommendation report",
+                "description": "Technical recommendation and corrective action evaluation report for marine equipment and structural components.",
+                "default_statement": "Comprehensive technical evaluation completed. Equipment recommended for continued service subject to routine inspection."
+            }
+        )
+
+        proc_utm, _ = InspectionProcedure.objects.get_or_create(
+            standard_code="ISO 16809 / IACS DCN",
+            defaults={
+                "title": "UTM Survey – Draft – Overboard pipes",
+                "description": "Ultrasonic thickness measurement survey of overboard discharge pipes, sea chests, and draft line hull plating.",
+                "default_statement": "Ultrasonic thickness survey performed on overboard discharge piping and draft line hull plating. Pipe wall thickness meets class minimum safety requirements."
+            }
+        )
+
+        proc_weld, _ = InspectionProcedure.objects.get_or_create(
+            standard_code="ISO 5817:2014",
+            defaults={
+                "title": "Visual & Weld Inspection Certificate",
+                "description": "General visual surface examination of structural steel welds, joint alignment, and defect evaluation.",
+                "default_statement": "Visual weld examination performed according to ISO 5817 Quality Level B. All inspected welds satisfy acceptance criteria."
             }
         )
 

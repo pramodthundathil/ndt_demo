@@ -20,6 +20,35 @@
       </div>
     </div>
 
+    <!-- Selected Certificate Standard Banner (Selected initially via Cards) -->
+    <div class="selected-cert-banner">
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <div class="cert-banner-icon">
+          {% if "gangway" in selected_procedure.title|lower %}🚢{% elif "load" in selected_procedure.title|lower %}⚖️{% elif "magnetic" in selected_procedure.title|lower or "mpi" in selected_procedure.title|lower %}🧲{% elif "recommendation" in selected_procedure.title|lower %}📋{% elif "utm" in selected_procedure.title|lower %}⚓{% else %}🛠️{% endif %}
+        </div>
+        <div>
+          <div style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; color: var(--primary);">
+            Selected Certificate Standard
+          </div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: var(--text-dark); margin-top: 2px;">
+            {{ selected_procedure.title }}
+            <span class="doc-number-badge" style="font-size: 0.75rem; margin-left: 8px; vertical-align: middle;">
+              {{ selected_procedure.standard_code }}
+            </span>
+          </h3>
+        </div>
+      </div>
+      {% if not report %}
+      <div>
+        <a href="{% url 'create_report' %}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+          🔄 Change Certificate
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    <input type="hidden" name="procedure_id" id="procedure_id" value="{{ selected_procedure.id }}">
+
     <!-- Section 1: Identification & Vessel Details -->
     <div class="form-grid">
       <div class="form-group">
@@ -27,18 +56,6 @@
         <input type="text" name="report_number" id="report_number" class="form-control" 
                value="{% if report %}{{ report.report_number }}{% else %}{{ new_report_number }}{% endif %}" required>
         <div id="report_num_feedback" style="font-size: 0.82rem; margin-top: 4px; font-weight: 600;"></div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="procedure_id">Inspection Procedure / Standard *</label>
-        <select name="procedure_id" id="procedure_id" class="form-control" onchange="updateDefaultStatement()" required>
-          {% for proc in procedures %}
-            <option value="{{ proc.id }}" data-statement="{{ proc.default_statement }}"
-                    {% if report and report.procedure.id == proc.id %}selected{% endif %}>
-              {{ proc.title }} ({{ proc.standard_code }})
-            </option>
-          {% endfor %}
-        </select>
       </div>
 
       <div class="form-group">
@@ -102,7 +119,7 @@
     <!-- Section 2: Statement & Notes -->
     <div class="form-group" style="margin-top: 1.5rem;">
       <label class="form-label" for="approval_statement">Official Inspection Statement Text *</label>
-      <textarea name="approval_statement" id="approval_statement" rows="3" class="form-control" required>{% if report %}{{ report.approval_statement }}{% else %}This Gangway / Platform has been visually inspected in conformity with NEN-EN 526 and approved for use for the period of one year.{% endif %}</textarea>
+      <textarea name="approval_statement" id="approval_statement" rows="3" class="form-control" required>{% if report %}{{ report.approval_statement }}{% else %}{{ selected_procedure.default_statement }}{% endif %}</textarea>
     </div>
 
     <div class="form-group">

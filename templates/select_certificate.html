@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Inspection Certificate - NDT Marine Portal{% endblock %}
+{% block page_title %}Select Inspection Certificate Standard{% endblock %}
+
+{% block content %}
+<div class="cert-cards-header">
+  <div>
+    <h2 class="cert-cards-header-title">📜 Select Certificate Standard</h2>
+    <p class="cert-cards-header-sub">Choose a certificate standard to initialize your inspection report</p>
+  </div>
+  <div style="width: 300px; max-width: 100%;">
+    <input type="text" id="cardSearchInput" onkeyup="filterCertCards()" class="form-control" placeholder="🔍 Search certificate or standard...">
+  </div>
+</div>
+
+<div class="cert-cards-grid" id="certCardsGrid">
+  {% for proc in procedures %}
+    {% if proc.standard_code == "EN 526:2016" or "gangway" in proc.title|lower %}
+      <!-- ENABLED CERTIFICATE CARD: GANGWAY VISUAL INSPECTION CERTIFICATE according to EN 526:2016 -->
+      <a href="{% url 'create_report' %}?procedure_id={{ proc.id }}" class="cert-card" data-title="{{ proc.title|lower }}" data-code="{{ proc.standard_code|lower }}" data-desc="{{ proc.description|lower }}">
+        <div>
+          <div class="cert-card-top">
+            <div class="cert-card-icon">🚢</div>
+            <span class="cert-card-code-badge">{{ proc.standard_code }}</span>
+          </div>
+
+          <h3 class="cert-card-title">{{ proc.title }}</h3>
+          
+          <p class="cert-card-desc">
+            {% if proc.description %}
+              {{ proc.description }}
+            {% else %}
+              Visual inspection & structural integrity verification of ship gangways and boarding platforms in conformity with EN 526:2016.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="cert-card-footer">
+          <span style="font-size: 0.76rem; color: #16a34a; font-weight: 700;">● Active Template</span>
+          <span class="cert-card-footer-btn">
+            Select Certificate
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </span>
+        </div>
+      </a>
+    {% else %}
+      <!-- DISABLED CERTIFICATE CARDS -->
+      <div class="cert-card cert-card-disabled" data-title="{{ proc.title|lower }}" data-code="{{ proc.standard_code|lower }}" data-desc="{{ proc.description|lower }}" title="This certificate template is currently disabled">
+        <div>
+          <div class="cert-card-top">
+            <div class="cert-card-icon cert-card-icon-disabled">
+              {% if "load" in proc.title|lower %}⚖️{% elif "magnetic" in proc.title|lower or "mpi" in proc.title|lower %}🧲{% elif "recommendation" in proc.title|lower %}📋{% elif "utm" in proc.title|lower %}⚓{% else %}🛠️{% endif %}
+            </div>
+            <span class="cert-card-code-badge disabled-badge">{{ proc.standard_code }}</span>
+          </div>
+
+          <h3 class="cert-card-title" style="color: #64748b;">{{ proc.title }}</h3>
+          
+          <p class="cert-card-desc">
+            {% if proc.description %}
+              {{ proc.description }}
+            {% else %}
+              Standard NDT marine certificate procedure.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="cert-card-footer">
+          <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 600;">● Currently Disabled</span>
+          <span class="cert-card-footer-btn disabled-btn">
+            🔒 Disabled
+          </span>
+        </div>
+      </div>
+    {% endif %}
+  {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #fff; border-radius: 8px; border: 1px solid var(--border-color);">
+      <p style="color: var(--text-muted);">No certificate templates available.</p>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  function filterCertCards() {
+    const query = document.getElementById('cardSearchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.cert-card');
+    cards.forEach(card => {
+      const title = card.getAttribute('data-title') || '';
+      const code = card.getAttribute('data-code') || '';
+      const desc = card.getAttribute('data-desc') || '';
+      if (title.includes(query) || code.includes(query) || desc.includes(query)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+{% endblock %}

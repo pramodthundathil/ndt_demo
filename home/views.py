@@ -123,9 +123,25 @@ def create_report(request):
     procedures = InspectionProcedure.objects.all()
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     
+    procedure_id = request.GET.get('procedure_id') if request.method == 'GET' else request.POST.get('procedure_id')
+    
+    # If GET request and no procedure selected initially, render the certificate selection cards!
+    if request.method == 'GET' and not procedure_id:
+        return render(request, 'select_certificate.html', {'procedures': procedures, 'profile': profile})
+        
+    if procedure_id:
+        selected_procedure = get_object_or_404(InspectionProcedure, id=procedure_id)
+        # Check if disabled
+        is_gangway = selected_procedure.standard_code == "EN 526:2016" or "gangway" in selected_procedure.title.lower()
+        if not is_gangway:
+            messages.warning(request, "Only 'GANGWAY VISUAL INSPECTION CERTIFICATE according to EN 526:2016' is currently enabled.")
+            return redirect('create_report')
+    else:
+        selected_procedure = procedures.filter(Q(standard_code="EN 526:2016") | Q(title__icontains="gangway")).first() or procedures.first()
+    
     if request.method == 'POST':
         procedure_id = request.POST.get('procedure_id')
-        procedure = get_object_or_404(InspectionProcedure, id=procedure_id) if procedure_id else None
+        procedure = get_object_or_404(InspectionProcedure, id=procedure_id) if procedure_id else selected_procedure
         
         report_number = request.POST.get('report_number', '').strip()
         if not report_number:
@@ -135,6 +151,7 @@ def create_report(request):
             suggested = generate_unique_report_number()
             messages.error(request, f"Certificate number '{report_number}' is already assigned to another certificate! Please enter a unique number.")
             context = {
+                'selected_procedure': procedure,
                 'procedures': procedures,
                 'profile': profile,
                 'new_report_number': suggested,
@@ -190,6 +207,7 @@ def create_report(request):
         return redirect('certificate_detail', pk=report.pk)
         
     context = {
+        'selected_procedure': selected_procedure,
         'procedures': procedures,
         'profile': profile,
         'new_report_number': generate_unique_report_number(),
@@ -207,6 +225,7 @@ def edit_report(request, pk):
         return redirect('report_list')
         
     procedures = InspectionProcedure.objects.all()
+    selected_procedure = report.procedure or procedures.first()
     
     if request.method == 'POST':
         new_report_number = request.POST.get('report_number', '').strip()
@@ -215,6 +234,7 @@ def edit_report(request, pk):
                 messages.error(request, f"Certificate number '{new_report_number}' is already assigned to another certificate! Please enter a unique number.")
                 context = {
                     'report': report,
+                    'selected_procedure': selected_procedure,
                     'procedures': procedures,
                     'profile': profile,
                 }
@@ -258,6 +278,7 @@ def edit_report(request, pk):
         
     context = {
         'report': report,
+        'selected_procedure': selected_procedure,
         'procedures': procedures,
         'profile': profile,
     }

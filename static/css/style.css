@@ -593,6 +593,9 @@ canvas#sigCanvas {
 /* ==========================================================================
    OFFICIAL CERTIFICATE SHEET SPECIFICATION (Fixed Printable Sheet Scale)
    ========================================================================== */
+/* ==========================================================================
+   OFFICIAL CERTIFICATE SHEET SPECIFICATION (Fixed Printable Sheet Scale)
+   ========================================================================== */
 .certificate-container {
   width: 100%;
   display: flex;
@@ -606,7 +609,8 @@ canvas#sigCanvas {
   width: 210mm;
   min-height: 297mm;
   max-height: 297mm;
-  padding: 12mm 12mm 12mm 12mm;
+  height: 297mm;
+  padding: 10mm 10mm 10mm 10mm;
   margin: 0 auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   position: relative;
@@ -616,51 +620,77 @@ canvas#sigCanvas {
 }
 
 .cert-single-border {
-  border: 2.5px solid #005696;
-  border-radius: 2px;
-  height: calc(297mm - 24mm);
-  padding: 18px 24px 14px;
+  border: 2.5px solid #6c99d2;
+  border-radius: 0;
+  height: calc(297mm - 20mm);
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   box-sizing: border-box;
+  overflow: hidden;
   z-index: 1;
 }
 
-.cert-horizontal-header-bar {
-  border-bottom: 1px solid #d0e1f9;
-  padding-bottom: 8px;
-  margin-bottom: 1.25rem;
-}
-
-.cert-top-title {
+/* Left Side Vertical Text (No dividing line, pixel-perfect position matching sample image) */
+.cert-vert-title {
+  position: absolute;
+  left: 66px;
+  bottom: 215px;
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
   font-family: 'Times New Roman', Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 3.85rem;
   font-weight: 400;
-  color: #5c8ec9;
+  color: #7da3d6;
   letter-spacing: 0.5px;
-  line-height: 1.15;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 3;
 }
 
-.cert-top-sub {
-  font-family: Arial, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 400;
-  color: #5c8ec9;
-  letter-spacing: 0.3px;
-  margin-top: 3px;
+.cert-vert-sub {
+  position: absolute;
+  left: 22px;
+  bottom: 40px;
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #1fa5b6;
+  white-space: nowrap;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+.cert-diamond {
+  color: #1fa5b6;
+  font-size: 0.76rem;
+}
+
+/* Main Content Area */
+.cert-main-content-area {
+  margin-left: 55px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 20px 12px 24px;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
 }
 
 .cert-watermark-overlay {
   position: absolute;
-  top: 46%;
-  left: 52%;
+  top: 48%;
+  left: 54%;
   transform: translate(-50%, -50%) rotate(-35deg);
   font-family: Arial, sans-serif;
-  font-size: 3.6rem;
+  font-size: 3.5rem;
   font-weight: 900;
-  color: rgba(180, 205, 230, 0.22);
+  color: rgba(180, 205, 230, 0.20);
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
@@ -669,48 +699,49 @@ canvas#sigCanvas {
 
 .cert-header-block {
   text-align: center;
-  margin-bottom: 1.85rem;
+  margin-top: 0.2rem;
+  margin-bottom: 1.4rem;
 }
 
 .mtq-logo-badge-img-wrapper {
-  margin: 0.5rem auto 1.15rem;
+  margin: 0.25rem auto 1rem;
   text-align: center;
 }
 
 .cert-logo-img {
-  max-height: 85px;
-  max-width: 175px;
+  max-height: 105px;
+  max-width: 210px;
   object-fit: contain;
 }
 
 .cert-heading-primary {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
   text-decoration: underline;
   text-transform: uppercase;
-  margin-top: 0.5rem;
+  margin-top: 1.35rem;
   margin-bottom: 0.45rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   color: #000000;
 }
 
 .cert-heading-secondary {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 700;
   text-decoration: underline;
   color: #000000;
 }
 
 .cert-grid-table {
-  width: 86%;
-  margin: 1.75rem auto 2.25rem;
+  width: 90%;
+  margin: 1.25rem auto 1.5rem;
   border-collapse: collapse;
 }
 
 .cert-grid-table td {
-  padding: 0.55rem 0.2rem;
+  padding: 0.48rem 0.2rem;
   font-size: 0.95rem;
   font-family: Arial, Helvetica, sans-serif;
   vertical-align: bottom;
@@ -736,32 +767,33 @@ canvas#sigCanvas {
   padding-left: 0.5rem;
   padding-bottom: 2px;
   color: #000000;
-  min-height: 22px;
+  min-height: 20px;
   line-height: 1.3;
 }
 
 .cert-statement-text {
-  width: 90%;
-  margin: 2rem auto 2.5rem;
+  width: 92%;
+  margin: 2.75rem auto 0;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.98rem;
+  font-size: 0.96rem;
   line-height: 1.5;
   font-weight: 400;
   color: #000000;
   text-align: left;
 }
 
+/* Date & Signed section with explicit Top Padding */
 .cert-sign-grid {
-  width: 86%;
-  margin: 0 auto 1.75rem;
+  width: 90%;
+  margin: 3.8rem auto 1.5rem;
 }
 
 .cert-sign-line {
   display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   font-family: Arial, sans-serif;
-  font-size: 0.98rem;
+  font-size: 0.96rem;
 }
 
 .cert-sign-title {
@@ -783,19 +815,19 @@ canvas#sigCanvas {
 .cert-sign-box {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-left: 0.5rem;
 }
 
 .cert-sig-img-element {
-  max-height: 55px;
-  max-width: 180px;
+  max-height: 52px;
+  max-width: 170px;
   object-fit: contain;
 }
 
 .cert-seal-img {
-  max-height: 55px;
-  max-width: 110px;
+  max-height: 52px;
+  max-width: 105px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -809,6 +841,7 @@ canvas#sigCanvas {
   color: #222222;
   line-height: 1.3;
   font-weight: 400;
+  margin-top: auto;
 }
 
 .cert-footer-bottom-bar {
@@ -928,5 +961,200 @@ canvas#sigCanvas {
     height: calc(297mm - 20mm) !important;
   }
 }
+
+/* ==========================================================================
+   CERTIFICATE SELECTION CARDS UI
+   ========================================================================== */
+.cert-cards-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cert-cards-header-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.cert-cards-header-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.cert-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.cert-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.35rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.cert-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -4px rgba(2, 132, 199, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary);
+}
+
+.cert-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cert-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  color: #0284c7;
+  box-shadow: inset 0 0 0 1px rgba(2, 132, 199, 0.15);
+  flex-shrink: 0;
+}
+
+.cert-card-code-badge {
+  font-family: monospace, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.cert-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.cert-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.cert-card-footer {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.cert-card-footer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.cert-card:hover .cert-card-footer-btn {
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+/* Selected Certificate Form Banner */
+.selected-cert-banner {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cert-banner-icon {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+}
+
+/* Disabled Certificate Cards */
+.cert-card-disabled {
+  opacity: 0.65;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.cert-card-disabled:hover {
+  transform: none !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.cert-card-icon-disabled {
+  background: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+}
+
+.disabled-badge {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  border-color: #cbd5e1 !important;
+}
+
+.disabled-btn {
+  background: #e2e8f0 !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+}
+
+
 
 

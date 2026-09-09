@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Gangway Visual Inspection Certificate",
+    "standard_code": "EN 526:2016",
+    "description": "Visual inspection of ship gangways and boarding platforms in conformity with EN 526:2016 standard specifications.",
+    "default_statement": "This Gangway / Platform has been visually inspected in conformity with NEN-EN 526 and approved for use for the period of one year."
+  },
+  {
+    "title": "Ultrasonic Thickness Measurement (UTM)",
+    "standard_code": "ISO 16809:2019",
+    "description": "Non-destructive ultrasonic thickness testing of ship hull plating, bulkheads, and structural members.",
+    "default_statement": "Ultrasonic thickness measurement conducted in compliance with classification society guidelines. Steel thickness within permissible corrosion limits."
+  },
+  {
+    "title": "Magnetic Report",
+    "standard_code": "ISO 17638:2016",
+    "description": "Surface and near-surface defect detection in ferromagnetic welds and ship structures using AC Yoke.",
+    "default_statement": "Magnetic particle testing performed on critical structural welds. No surface breaking linear discontinuities detected."
+  },
+  {
+    "title": "Load Test Report 26-C095 / ISO7061-A",
+    "standard_code": "26-C095 / ISO7061-A",
+    "description": "Proof load testing and structural deflection assessment for aluminum shore gangways & marine lifting equipment.",
+    "default_statement": "Proof load test conducted in accordance with ISO 7061-A & 26-C095 guidelines. Maximum test load applied without permanent deformation."
+  },
+  {
+    "title": "Recommendation report",
+    "standard_code": "NDT-REC-2026",
+    "description": "Technical recommendation and corrective action evaluation report for marine equipment and structural components.",
+    "default_statement": "Comprehensive technical evaluation completed. Equipment recommended for continued service subject to routine inspection."
+  },
+  {
+    "title": "UTM Survey – Draft – Overboard pipes",
+    "standard_code": "ISO 16809 / IACS DCN",
+    "description": "Ultrasonic thickness measurement survey of overboard discharge pipes, sea chests, and draft line hull plating.",
+    "default_statement": "Ultrasonic thickness survey performed on overboard discharge piping and draft line hull plating. Pipe wall thickness meets class minimum safety requirements."
+  },
+  {
+    "title": "Visual & Weld Inspection Certificate",
+    "standard_code": "ISO 5817:2014",
+    "description": "General visual surface examination of structural steel welds, joint alignment, and defect evaluation.",
+    "default_statement": "Visual weld examination performed according to ISO 5817 Quality Level B. All inspected welds satisfy acceptance criteria."
+  }
+]

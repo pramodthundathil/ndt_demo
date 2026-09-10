@@ -600,23 +600,28 @@ canvas#sigCanvas {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 0.75rem 0;
+  padding: 0.75rem 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .certificate-sheet {
   background: #ffffff;
   color: #000000;
-  width: 210mm;
-  min-height: 297mm;
-  max-height: 297mm;
-  height: 297mm;
-  padding: 10mm 10mm 10mm 10mm;
+  width: 210mm !important;
+  min-width: 210mm !important;
+  max-width: 210mm !important;
+  min-height: 297mm !important;
+  max-height: 297mm !important;
+  height: 297mm !important;
+  padding: 10mm;
   margin: 0 auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   position: relative;
   font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .cert-single-border {
@@ -875,20 +880,6 @@ canvas#sigCanvas {
 
   .page-container {
     padding: 1rem;
-  }
-
-  .certificate-sheet {
-    width: 100%;
-    min-height: auto;
-    padding: 10px;
-  }
-
-  .cert-grid-table {
-    width: 100%;
-  }
-
-  .cert-statement-text {
-    width: 100%;
   }
 }
 
